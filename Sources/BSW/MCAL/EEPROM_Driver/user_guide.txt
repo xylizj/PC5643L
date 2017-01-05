@@ -1,0 +1,19 @@
+//==========================================================//
+//									BY XYL 2015-08-12												//
+//==========================================================//
+
+1.	Call function ee_InitEeprom when init.
+
+2.	Call function ee_WriteRecord to store record.
+2.1	If the length of the data record is fixed, set LENGTH_TYPE to FIX_LENGTH
+			and set DATA_SIZE to what you need,in user_cfg.h.
+2.2	The length should be 8 bytes align.
+2.3	The first parameter(dataPtr) of ee_WriteRecord is 
+			the address of data buffer that need to store, 
+		and the second is the length of buffer.
+			
+3.	EE_TEST is for test, keep it 0 and do not modifiy it unless you need to have a test.
+
+4.	DFLASH 4*16KB, divide to 4 blocks, each 16KB.
+		NUMBER_OF_ACTIVE_BLOCKS defines the active blocks for storage operation,
+		and shall be less than 4, since 1 block is used for swap-operation.
