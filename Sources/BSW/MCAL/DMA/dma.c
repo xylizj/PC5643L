@@ -486,3 +486,110 @@ void ConfigureDMA13_ADS1210_Pop(void)
 	DMAMUX.CHCONFIG[13].B.SOURCE = 15;//eTimer_0
 	DMAMUX.CHCONFIG[13].B.ENBL = 1;		
 }
+
+
+extern uint16_t   SID_m_ct_eTimer1Ch0Capt1;
+
+void ConfigureDMA12_eTimer1Ch0(void)
+{
+	EDMA.CHANNEL[12].TCDWORD0_.B.SADDR = (uint32_t) (&ETIMER_1.CHANNEL[0].CAPT1.R);   // Source Address 	
+   
+   EDMA.CHANNEL[12].TCDWORD4_.B.SMOD  = 0;	    //  Source address modulo
+   EDMA.CHANNEL[12].TCDWORD4_.B.SSIZE = 1;	    //  Source transfer size : 16 Bits 
+   EDMA.CHANNEL[12].TCDWORD4_.B.DMOD  = 0;	    //  Destination address modulo	
+   EDMA.CHANNEL[12].TCDWORD4_.B.DSIZE = 1;	    //  Destination transfer size : 16 Bits 
+   EDMA.CHANNEL[12].TCDWORD4_.B.SOFF  = 0;	    //  Signed source address offset
+   
+   EDMA.CHANNEL[12].TCDWORD8_.B.SMLOE = 0;	    //  disable source minor loop offset
+   EDMA.CHANNEL[12].TCDWORD8_.B.DMLOE = 0;	    //  disable desti minor loop offset
+   EDMA.CHANNEL[12].TCDWORD8_.B.MLOFF = 0;	    //  minor loop offset
+   EDMA.CHANNEL[12].TCDWORD8_.B.NBYTES = 2;	//  Inner "minor" byte count 
+   
+   EDMA.CHANNEL[12].TCDWORD12_.B.SLAST =  0;	    //  last Signed source address adjust                  
+
+   EDMA.CHANNEL[12].TCDWORD16_.B.DADDR = (uint32_t)(&SID_m_ct_eTimer1Ch0Capt1);    // Destination address 
+   
+   EDMA.CHANNEL[12].TCDWORD20_.B.CITER_E_LINK = 0;  //link on minor loop 
+   EDMA.CHANNEL[12].TCDWORD20_.B.CITER_LINKCH = 0; //link on ch15                       
+   EDMA.CHANNEL[12].TCDWORD20_.B.CITER = 1;	       //   iteration count
+   EDMA.CHANNEL[12].TCDWORD20_.B.DOFF = 0;	       //  Signed destination address offset 
+   
+   EDMA.CHANNEL[12].TCDWORD24_.B.DLAST_SGA = 0;     //  Signed destination address adjust
+ 
+   EDMA.CHANNEL[12].TCDWORD28_.B.BITER = 1;          // iteration count 
+   //EDMA.CHANNEL[13].TCDWORD28_.B.BITER |= (15<<9);
+   EDMA.CHANNEL[12].TCDWORD28_.B.BITER_E_LINK = 0;   //no link on minor loop 
+   EDMA.CHANNEL[12].TCDWORD28_.B.BWC = 0;	        // bandwidth control :  No DMA Stalls 
+   EDMA.CHANNEL[12].TCDWORD28_.B.DONE = 0;	        // Channel Done 
+   EDMA.CHANNEL[12].TCDWORD28_.B.ACTIVE = 0;	        // Channel Active
+   EDMA.CHANNEL[12].TCDWORD28_.B.MAJOR_LINKCH = 0;	// Link to channel 4 on major loop
+   EDMA.CHANNEL[12].TCDWORD28_.B.MAJOR_E_LINK = 0;   //No Link
+   EDMA.CHANNEL[12].TCDWORD28_.B.E_SG = 0;	    //  Disable Scatter/Gather
+   EDMA.CHANNEL[12].TCDWORD28_.B.D_REQ = 0;	    //  TCD still enabled when done  
+   EDMA.CHANNEL[12].TCDWORD28_.B.INT_HALF = 0;	//  No interrupt on minor loop count
+   EDMA.CHANNEL[12].TCDWORD28_.B.INT_MAJ = 0;    //  Interrupt on major loop completion
+	
+	EDMA.DCHPRI[12].R = 0x40;
+	EDMA.DCHPRI[12].R |= 12;
+
+	DMAMUX.CHCONFIG[12].B.ENBL = 0;	
+	DMAMUX.CHCONFIG[12].B.TRIG = 0;
+
+	EDMA.SERQR.R = 12; //Enable request to channel
+
+	DMAMUX.CHCONFIG[12].B.SOURCE = 16;//eTimer_1 Channel 0
+	DMAMUX.CHCONFIG[12].B.ENBL = 1;			
+}
+
+extern uint16_t   SID_m_ct_eTimer1Ch1Capt1[2];
+
+void ConfigureDMA11_eTimer1Ch1(void)
+{
+	EDMA.CHANNEL[11].TCDWORD0_.B.SADDR = (uint32_t) (&ETIMER_1.CHANNEL[1].CNTR.R);   // Source Address 	
+   
+   EDMA.CHANNEL[11].TCDWORD4_.B.SMOD  = 0;	    //  Source address modulo
+   EDMA.CHANNEL[11].TCDWORD4_.B.SSIZE = 1;	    //  Source transfer size : 16 Bits 
+   EDMA.CHANNEL[11].TCDWORD4_.B.DMOD  = 0;	    //  Destination address modulo	
+   EDMA.CHANNEL[11].TCDWORD4_.B.DSIZE = 1;	    //  Destination transfer size : 16 Bits 
+   EDMA.CHANNEL[11].TCDWORD4_.B.SOFF  = 0;	    //  Signed source address offset
+   
+   EDMA.CHANNEL[11].TCDWORD8_.B.SMLOE = 0;	    //  disable source minor loop offset
+   EDMA.CHANNEL[11].TCDWORD8_.B.DMLOE = 0;	    //  disable desti minor loop offset
+   EDMA.CHANNEL[11].TCDWORD8_.B.MLOFF = 0;	    //  minor loop offset
+   EDMA.CHANNEL[11].TCDWORD8_.B.NBYTES = 2;	//  Inner "minor" byte count 
+   
+   EDMA.CHANNEL[11].TCDWORD12_.B.SLAST =  0;	    //  last Signed source address adjust                  
+
+   EDMA.CHANNEL[11].TCDWORD16_.B.DADDR = (uint32_t)(SID_m_ct_eTimer1Ch1Capt1);    // Destination address 
+   
+   EDMA.CHANNEL[11].TCDWORD20_.B.CITER_E_LINK = 0;  //link on minor loop 
+   EDMA.CHANNEL[11].TCDWORD20_.B.CITER_LINKCH = 0; //link on ch15                       
+   EDMA.CHANNEL[11].TCDWORD20_.B.CITER = 2;	       //   iteration count
+   EDMA.CHANNEL[11].TCDWORD20_.B.DOFF = 2;	       //  Signed destination address offset 
+   
+   EDMA.CHANNEL[11].TCDWORD24_.B.DLAST_SGA = -2*2;     //  Signed destination address adjust
+ 
+   EDMA.CHANNEL[11].TCDWORD28_.B.BITER = 2;          // iteration count 
+   //EDMA.CHANNEL[13].TCDWORD28_.B.BITER |= (15<<9);
+   EDMA.CHANNEL[11].TCDWORD28_.B.BITER_E_LINK = 0;   //no link on minor loop 
+   EDMA.CHANNEL[11].TCDWORD28_.B.BWC = 0;	        // bandwidth control :  No DMA Stalls 
+   EDMA.CHANNEL[11].TCDWORD28_.B.DONE = 0;	        // Channel Done 
+   EDMA.CHANNEL[11].TCDWORD28_.B.ACTIVE = 0;	        // Channel Active
+   EDMA.CHANNEL[11].TCDWORD28_.B.MAJOR_LINKCH = 0;	// Link to channel 4 on major loop
+   EDMA.CHANNEL[11].TCDWORD28_.B.MAJOR_E_LINK = 0;   //No Link
+   EDMA.CHANNEL[11].TCDWORD28_.B.E_SG = 0;	    //  Disable Scatter/Gather
+   EDMA.CHANNEL[11].TCDWORD28_.B.D_REQ = 0;	    //  TCD still enabled when done  
+   EDMA.CHANNEL[11].TCDWORD28_.B.INT_HALF = 0;	//  No interrupt on minor loop count
+   EDMA.CHANNEL[11].TCDWORD28_.B.INT_MAJ = 0;    //  Interrupt on major loop completion
+	
+	EDMA.DCHPRI[11].R = 0x40;
+	EDMA.DCHPRI[11].R |= 11;
+
+	DMAMUX.CHCONFIG[11].B.ENBL = 0;	
+	DMAMUX.CHCONFIG[11].B.TRIG = 0;
+
+	EDMA.SERQR.R = 11; //Enable request to channel
+
+	DMAMUX.CHCONFIG[11].B.SOURCE = 17;//eTimer_1 Channel 1
+	DMAMUX.CHCONFIG[11].B.ENBL = 1;			
+}

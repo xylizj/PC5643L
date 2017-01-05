@@ -180,12 +180,12 @@ void Tx_Msg_TempBridgeExc_Encode(void)
 
 
 extern sint32 iD_ActualReq;
-extern sint32 iDFbck;
+extern sint32 SID_m_i_d;
 
 void Tx_Msg_Voltage_Encode(void)
 {	
 	*(uint32_t*)&Tx_Msg_Voltage.data[0] = iD_ActualReq;
-	*(uint32_t*)&Tx_Msg_Voltage.data[4] = iDFbck;
+	*(uint32_t*)&Tx_Msg_Voltage.data[4] = SID_m_i_d;
 	/*
 	*(uint16_t*)&Tx_Msg_Voltage.data[0] = SID_m_ct_V48Raw;//SID_m_u_V48;
 	*(uint16_t*)&Tx_Msg_Voltage.data[2] = SID_m_ct_V12Raw;//SID_m_u_V12;
@@ -224,12 +224,12 @@ void Tx_Msg_ADS1210_Encode(void)
 
 
 extern sint32 iQ_ActualReq;
-extern sint32 iQFbck;
+extern sint32 SID_m_i_q;
 
 void Tx_Msg_Debug_Encode(void)
 {	
 	*(uint32_t*)&Tx_Msg_Debug.data[0] = iQ_ActualReq;
-	*(uint32_t*)&Tx_Msg_Debug.data[4] = iQFbck;
+	*(uint32_t*)&Tx_Msg_Debug.data[4] = SID_m_i_q;
 }
 
 

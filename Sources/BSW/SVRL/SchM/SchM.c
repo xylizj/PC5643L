@@ -95,7 +95,7 @@ void SchM_BSW_Init(void)
 		#endif
 	#endif
 	
-	#if 1
+	#if 0 //20161128 xyl comment
 	initDSPI_1();
 	initAD2S1210();
 	delay_us(25000);
@@ -130,7 +130,7 @@ void SchM_BSW_Init(void)
 	ConfigureDMA13_ADS1210_Pop();
 	
 	eTimer0_Init();
-	eTimer1_Init();
+	eTimer1_Encode_Init();//eTimer1_Init();//20161128 xyl modify
 	
 	
 	#ifdef USE_INTC
