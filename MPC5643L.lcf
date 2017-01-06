@@ -1,0 +1,99 @@
+/* lcf file for MPC5643L processors                                         */
+/*                                                                          */
+/* Note internal memory configurations vary among the various family        */
+/* devices.                                                                 */
+/*                                                                          */
+/*   +-----------+------------+				                                */
+/*   |  Device   | MPC5643L   |                                				*/
+/*   +-----------+------------+                                				*/
+/*   |SRAM/Flash | 128KB/1MB  |                                				*/
+/*   |           |            |                               				*/ 
+/*   +-----------+------------+                               */
+/*                                                                          */
+/* These memory definitions will allow the stationery example to run on     */
+/* the smallest, i.e. MPC5643L device's internal memory (1MB   Flash,       */
+/* 128KB SRAM). */
+
+MEMORY
+{
+    resetvector:           org = 0x00000000,   len = 0x00000008
+    init:                  org = 0x00000010,   len = 0x0000fff0
+    exception_handlers_p0: org = 0x00010000,   len = 0x00010000
+    internal_flash:        org = 0x00030000,   len = 0x000D0000
+    
+    internal_ram:          org = 0x40000000,   len = 0x0001C000
+    heap  :                org = 0x4001C000,   len = 0x00002000 /* z4 Heap start location */
+    stack :                org = 0x4001E000,   len = 0x00001f00 /* z4 Start location for Stack */
+}
+
+/* This will ensure the rchw and reset vector are not stripped by the linker */
+FORCEACTIVE { "bam_rchw" "bam_resetvector" }
+
+SECTIONS
+{
+    .__bam_bootarea LOAD (0x00000000): {} > resetvector
+
+    /* Note the intc_hw_branch_table, if used, MUST be loaded at the */
+    /* IVPR + 2KB (0x800)  That means if the code loaded into the    */
+    /* .__exception_handlers_p* section is larger than 0x700 bytes,  */
+    /* the following group(s) must be reconfigured.                  */
+    
+   GROUP  : {
+      .init LOAD (0x00010) : {}
+      .init_vle (VLECODE) LOAD (0x00010 + SIZEOF(.init)) : {
+        *(.init)
+        *(.init_vle)
+      }
+     
+      
+    } > init
+    
+    GROUP : {
+      .ivor_branch_table_p0 (VLECODE) LOAD (0x00010000)   : {}
+      .intc_hw_branch_table_p0 LOAD (0x00010800): {}           
+      .__exception_handlers_p0  (VLECODE) LOAD (0x00010100) : {}
+    } > exception_handlers_p0
+
+    GROUP  : {
+      .intc_sw_isr_vector_table_p0 ALIGN (2048) : {}
+      .text : {} 
+      .text_vle (VLECODE) : {
+         *(.text)
+         *(.text_vle)
+       }
+       .rodata (CONST) : {
+         *(.rdata)
+         *(.rodata)
+       }
+       .ctors : {}
+       .dtors : {}
+       extab : {}
+       extabindex : {}
+    } > internal_flash
+
+    GROUP : {
+       .__uninitialized_intc_handlertable ALIGN(2048) : {}
+       .data   : {}
+       .sdata  : {}
+       .sbss   : {}
+       .sdata2 : {}
+       .sbss2  : {}
+       .bss    : {}
+    } > internal_ram
+}
+
+/* Freescale CodeWarrior compiler address designations */
+
+_stack_addr = ADDR(stack)+SIZEOF(stack);
+_stack_end  = ADDR(stack);
+_heap_addr  = ADDR(heap);
+_heap_end   = ADDR(heap)+SIZEOF(heap);
+
+
+/* Exceptions Handlers Location (used in Exceptions.c for e200 IVPR initialization)*/
+
+EXCEPTION_HANDLERS    = ADDR(exception_handlers_p0);
+
+/* L2 SRAM Location (used for L2 SRAM initialization) */
+
+L2SRAM_LOCATION = 0x40000000;
