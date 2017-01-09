@@ -63,7 +63,7 @@
 
 
 volatile uint32_t RawVoltagesTable_FIFO3[CTU_FIFO3_THRESHOLD];
-volatile uint32_t RawVoltagesTable_FIFO2_Array[BITER_CNT][CTU_FIFO2_THRESHOLD];
+//volatile uint32_t RawVoltagesTable_FIFO2_Array[BITER_CNT][CTU_FIFO2_THRESHOLD];
 volatile uint32_t RawVoltagesTable_FIFO1_Array[BITER_CNT][CTU_FIFO1_THRESHOLD];
 volatile uint32_t RawVoltagesTable_FIFO0_Array[BITER_CNT][CTU_FIFO0_THRESHOLD];
 
@@ -96,41 +96,41 @@ void SchM_BSW_Init(void)
 	#endif
 	
 	#if 0 //20161128 xyl comment
-	initDSPI_1();
+	/*initDSPI_1();
 	initAD2S1210();
-	delay_us(25000);
+	delay_us(25000);*/
 	#endif
 
-	#if 1
-	PWM_PadConfig();
+	#if 0
+	/*PWM_PadConfig();
 	ConfigureFlexPWM0Sub0();
 	ConfigureFlexPWM0Sub1();
 	ConfigureFlexPWM0Sub2();
 	FlexPWM0Sub3(0);
-	LaunchFlexPWM0_modules012();
+	LaunchFlexPWM0_modules012();*/
 	#endif
 
 
 	#if 1	
 	ConfigureCTU();
 	ConfigureDMA10_CTU_FIFO3();
-	ConfigureDMA9_CTU_FIFO2();
+	//ConfigureDMA9_CTU_FIFO2();
 	ConfigureDMA8_CTU_FIFO1();
 	ConfigureDMA7_CTU_FIFO0();
 	Adc_Init();
-  #endif
+  	#endif
     	
 	Gpt_Init();	
 	Gpt_StartTimer();
 
 
-	ConfigureDMA15_ADS1210_Ioctl_low();
+	/*ConfigureDMA15_ADS1210_Ioctl_low();
 	ConfigureDMA3_ADS1210_Ioctl_high();
 	ConfigureDMA14_ADS1210_Push();
-	ConfigureDMA13_ADS1210_Pop();
+	ConfigureDMA13_ADS1210_Pop();*/
 	
 	eTimer0_Init();
-	eTimer1_Encode_Init();//eTimer1_Init();//20161128 xyl modify
+	//eTimer1_Encode_Init();//eTimer1_Init();//20161128 xyl modify
 	
 	
 	#ifdef USE_INTC
@@ -155,11 +155,11 @@ void SchM_BSW_Init(void)
 void SchM_ASW_Init(void)
 {
 	//SetFlexPWM0Sub3_val2(3200/2);//
-	EXCLoopInit();
+	//EXCLoopInit();
 	
 	//SID_initialize();
 	//SID_F_initialize();
-	focFastLoopInit();
+	//focFastLoopInit();
 }
 /*******************************************************************************
 * NAME:             SchM_MainFunction
@@ -173,9 +173,9 @@ void SchM_MainFunction(void)
 {
 	#ifdef USE_CAN_0
 	CAN_0_Receive();
-		#ifdef USE_XCP
-		Xcp_Background();
-		#endif
+	#ifdef USE_XCP
+	Xcp_Background();
+	#endif
 	#endif
 }
 
@@ -194,9 +194,9 @@ void SchM_Period1Ms(void)
 	CANTxRx_State();
 	#endif
 
-	Adc_GetValue_1ms();
+	//Adc_GetValue_1ms();
 	
-	EXCLoop();//20160621
+	//EXCLoop();//20160621
 }
 
 /*******************************************************************************
@@ -231,17 +231,17 @@ void SchM_Period10Ms(void)
 	Adc_GetValue_10ms();
 	SafetyControl();
 	//SID_step();
-	if (SID_m_ct_V48Raw > 3546)
+	/*if (SID_m_ct_V48Raw > 3546)
 	{
 		SID_m_u_V48 = (SInt32)(605552 * 3546 );
 	}
 	else
 	{
 		SID_m_u_V48 = (SInt32)(605552 * SID_m_ct_V48Raw );
-	}
+	}*/
 
 	//CurD_Req_Ramp();//20160622
-	CurQ_Req_Ramp();
+	//CurQ_Req_Ramp();
 }
 
 /*******************************************************************************
@@ -302,7 +302,7 @@ void SchM_Period100Ms(void)
 	#endif
 	
 	
-	if(sch_1000ms_en == 1)
+	/*if(sch_1000ms_en == 1)
 	{
 		sch_100ms_cnt ++;
 		
@@ -374,7 +374,7 @@ void SchM_Period100Ms(void)
 			qAxisPI_P.f32IntegPartK_1 = 0;
 			qAxisPI_P.u16LimitFlag = 0;
 		}
-	}
+	}*/
 }
 
 

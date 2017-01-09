@@ -32,51 +32,50 @@ static void ConfigureCmdList(void)
 	//Command list register
 	//FIFO3 Phase current
 	//dual
-	DualFifoChaChb(0,3,14,13);
-	//single	
-	CTU.CLR_SCM[1].B.CIR = 0;//no ISR
-	CTU.CLR_SCM[1].B.LC = 0;//Last command
-	CTU.CLR_SCM[1].B.CMS = 0;//single conv
-	CTU.CLR_SCM[1].B.FIFO = 3;//FIFO3
-	CTU.CLR_SCM[1].B.SU = 1;//ADC1
-	CTU.CLR_SCM[1].B.CH = 12;//ADC1_1 PhaseW
-
-	//FIFO2 Exc current
-	//single	
-	CTU.CLR_SCM[2].B.CIR = 0;//no ISR
-	CTU.CLR_SCM[2].B.LC = 0;//Last command
-	CTU.CLR_SCM[2].B.CMS = 0;//single conv
-	CTU.CLR_SCM[2].B.FIFO = 2;//FIFO2
-	CTU.CLR_SCM[2].B.SU = 1;//ADC1
-	CTU.CLR_SCM[2].B.CH = 1;//ADC1_1 PhaseW
-	
+	DualFifoChaChb(0,3,11,12);
 	//dummy command
 	//dual
-	CTU.CLR_DCM[3].B.CIR = 0;//no ISR
-	CTU.CLR_DCM[3].B.LC = 1;//Last command 
-	CTU.CLR_DCM[3].B.CMS = 1;//dual conv
+	CTU.CLR_DCM[1].B.CIR = 0;//no ISR
+	CTU.CLR_DCM[1].B.LC = 1;//Last command 
+	CTU.CLR_DCM[1].B.CMS = 1;//dual conv
 	
 	//all ADC channel in dual-conv mode
 	//FIFO1
-	Adc01DualCommonChan(4,1,0); 
-	Adc01DualCommonChan(5,1,1); 
-	Adc01DualCommonChan(6,1,2); 
-	Adc01DualCommonChan(7,1,3); 
-	Adc01DualCommonChan(8,1,4); 
-	Adc01DualCommonChan(9,1,5); 
-	Adc01DualCommonChan(10,1,6); 
-   //FIFO0
-	Adc01DualCommonChan(11,0,7); 
-	Adc01DualCommonChan(12,0,8); 
-	DualFifoChaChb(13,0,11,12);
-	DualFifoChaChb(14,0,13,14);
-	DualFifoChaChb(15,0,10,15);
-	DualFifoChaChb(16,0,15,10);
+	Adc01DualCommonChan(2,1,2); 
+	Adc01DualCommonChan(3,1,3); 
+	Adc01DualCommonChan(4,1,4); 
+	Adc01DualCommonChan(5,1,6); 
+	Adc01DualCommonChan(6,1,7); 
+	Adc01DualCommonChan(7,1,8); 
+   
+   	//FIFO0
+	//single	
+	CTU.CLR_SCM[8].B.CIR = 0;//no ISR
+	CTU.CLR_SCM[8].B.LC = 0;//Last command
+	CTU.CLR_SCM[8].B.CMS = 0;//single conv
+	CTU.CLR_SCM[8].B.FIFO = 0;//FIFO0
+	CTU.CLR_SCM[8].B.SU = 1;//ADC1
+	CTU.CLR_SCM[8].B.CH = 0;//ADC1_0
+
+	CTU.CLR_SCM[9].B.CIR = 0;//no ISR
+	CTU.CLR_SCM[9].B.LC = 0;//Last command
+	CTU.CLR_SCM[9].B.CMS = 0;//single conv
+	CTU.CLR_SCM[9].B.FIFO = 0;//FIFO0
+	CTU.CLR_SCM[9].B.SU = 1;//ADC1
+	CTU.CLR_SCM[9].B.CH = 1;//ADC1_1
+
+	CTU.CLR_SCM[10].B.CIR = 0;//no ISR
+	CTU.CLR_SCM[10].B.LC = 0;//Last command
+	CTU.CLR_SCM[10].B.CMS = 0;//single conv
+	CTU.CLR_SCM[10].B.FIFO = 0;//FIFO0
+	CTU.CLR_SCM[10].B.SU = 1;//ADC1
+	CTU.CLR_SCM[10].B.CH = 5;//ADC1_5
+	
 	//dummy command
 	//dual
-	CTU.CLR_DCM[17].B.CIR = 0;//no ISR
-	CTU.CLR_DCM[17].B.LC = 1;//Last command 
-	CTU.CLR_DCM[17].B.CMS = 1;//dual conv
+	CTU.CLR_DCM[11].B.CIR = 0;//no ISR
+	CTU.CLR_DCM[11].B.LC = 1;//Last command 
+	CTU.CLR_DCM[11].B.CMS = 1;//dual conv
 }
 
 
@@ -106,14 +105,14 @@ static void ConfigureAdcCommand(void)
 static void ConfigureFifo(void)
 {
 	CTU.CR.B.DMA_EN3 = 1;//Enable FIFO3 DMA 
-	CTU.CR.B.DMA_EN2 = 1;//Enable FIFO2 DMA 
+	//CTU.CR.B.DMA_EN2 = 1;//Enable FIFO2 DMA 
 	CTU.CR.B.DMA_EN1 = 1;//Enable FIFO1 DMA 
 	CTU.CR.B.DMA_EN0 = 1;//Enable FIFO0 DMA 
 
   //CTU.FCR.B.FIFO_OVERFLOW_EN0 = 1; // Enable FIFO OVERFLOW Interrupt request
 
 	CTU.TH1.B.THRESHOLD3 = CTU_FIFO3_THRESHOLD-1;
-	CTU.TH1.B.THRESHOLD2 = CTU_FIFO2_THRESHOLD-1;
+	//CTU.TH1.B.THRESHOLD2 = CTU_FIFO2_THRESHOLD-1;
 	CTU.TH1.B.THRESHOLD1 = CTU_FIFO1_THRESHOLD-1;
 	CTU.TH1.B.THRESHOLD0 = CTU_FIFO0_THRESHOLD-1;	
 }

@@ -17,7 +17,7 @@ extern volatile uint32_t RawVoltagesTable_FIFO0_Array[BITER_CNT][CTU_FIFO0_THRES
 extern uint16_t SID_m_ct_CurPhaseURaw;
 extern uint16_t SID_m_ct_CurPhaseVRaw;
 extern uint16_t SID_m_ct_CurPhaseWRaw;
-extern uint16_t SID_m_ct_CurExcRaw;
+//extern uint16_t SID_m_ct_CurExcRaw;
 
 extern uint16_t SID_m_ct_TempPURaw;
 extern uint16_t SID_m_ct_TempPVRaw;

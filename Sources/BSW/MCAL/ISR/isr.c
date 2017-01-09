@@ -54,8 +54,8 @@ static inline
 void AcquirePhaseCur(void)
 {
 	SID_m_ct_CurPhaseURaw = (uint16_t)(RawVoltagesTable_FIFO3[0] & ADC_RESULT_MASK);
-	SID_m_ct_CurPhaseVRaw = (uint16_t)(RawVoltagesTable_FIFO3[1] & ADC_RESULT_MASK);
-	SID_m_ct_CurPhaseWRaw = (uint16_t)(RawVoltagesTable_FIFO3[2] & ADC_RESULT_MASK);
+	//SID_m_ct_CurPhaseVRaw = (uint16_t)(RawVoltagesTable_FIFO3[1] & ADC_RESULT_MASK);
+	SID_m_ct_CurPhaseWRaw = (uint16_t)(RawVoltagesTable_FIFO3[1] & ADC_RESULT_MASK);
 	
 		
 	//*********************//
@@ -66,12 +66,12 @@ void AcquirePhaseCur(void)
 		SIU.GPDO[22].R=0;//三相驱动失能
 		DANGER_FLAG = 1;	
 	}
-	if(SID_m_ct_CurPhaseVRaw>(CUR_PHASE_RAW_DELTA_THROLD+SID_m_ct_CurPhaseV_Ref)
+	/*if(SID_m_ct_CurPhaseVRaw>(CUR_PHASE_RAW_DELTA_THROLD+SID_m_ct_CurPhaseV_Ref)
 	   || SID_m_ct_CurPhaseV_Ref>(CUR_PHASE_RAW_DELTA_THROLD+SID_m_ct_CurPhaseVRaw))
 	{
 		SIU.GPDO[22].R=0;//三相驱动失能	
 		DANGER_FLAG = 1;
-	}
+	}*/
 	if(SID_m_ct_CurPhaseWRaw>(CUR_PHASE_RAW_DELTA_THROLD+SID_m_ct_CurPhaseW_Ref)
 	   || SID_m_ct_CurPhaseW_Ref>(CUR_PHASE_RAW_DELTA_THROLD+SID_m_ct_CurPhaseWRaw))
 	{
@@ -82,7 +82,7 @@ void AcquirePhaseCur(void)
 			
 	{//Phase current normalization BEGIN!!
 	    SID_m_i_CurPhaseU = (SInt32)(((SInt16)(SID_m_ct_CurPhaseURaw-SID_m_ct_CurPhaseU_Ref))<<20);//*1048576
-	    SID_m_i_CurPhaseV = (SInt32)(((SInt16)(SID_m_ct_CurPhaseVRaw-SID_m_ct_CurPhaseV_Ref))<<20);
+	    //SID_m_i_CurPhaseV = (SInt32)(((SInt16)(SID_m_ct_CurPhaseVRaw-SID_m_ct_CurPhaseV_Ref))<<20);
       	SID_m_i_CurPhaseW = (SInt32)(((SInt16)(SID_m_ct_CurPhaseWRaw-SID_m_ct_CurPhaseW_Ref))<<20);
 	}//Phase current normalization END!!
 	SID_m_i_CurPhase_sum = SID_m_i_CurPhaseU+SID_m_i_CurPhaseV+SID_m_i_CurPhaseW;	
@@ -117,8 +117,8 @@ void eTimer_0_TC5IR_Isr(void)
 	
 	AcquirePhaseCur();
 	
-	Enc_SpdMeas();//20161128 xyl add
+	//Enc_SpdMeas();//20161128 xyl add
 	
-	focFastLoop();	
-	UpdatePWM_MDRV();
+	//focFastLoop();	
+	//UpdatePWM_MDRV();
 }

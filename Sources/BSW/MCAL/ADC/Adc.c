@@ -23,27 +23,35 @@ extern uint32_t Adc1_result[ADC1_NUMBER_OF_CHANNELS];
 
 
 uint16_t SID_m_ct_CurPhaseURaw;
-uint16_t SID_m_ct_CurPhaseVRaw;
+//uint16_t SID_m_ct_CurPhaseVRaw;
 uint16_t SID_m_ct_CurPhaseWRaw;
-uint16_t SID_m_ct_CurExcRaw;
+//uint16_t SID_m_ct_CurExcRaw;
 
 uint16_t SID_m_ct_TempPURaw;
 uint16_t SID_m_ct_TempPVRaw;
 uint16_t SID_m_ct_TempPWRaw;
-uint16_t SID_m_ct_TempExcRaw;
+//uint16_t SID_m_ct_TempExcRaw;
 
-uint16_t SID_m_ct_V48Raw;
+//uint16_t SID_m_ct_V48Raw;
 uint16_t SID_m_ct_V12Raw;
-uint16_t SID_m_ct_V10Raw;
+uint16_t SID_m_ct_T15Raw;
 uint16_t SID_m_ct_V5Raw;
 
-uint16_t SID_m_ct_CurRefRaw;
-uint16_t SID_m_ct_TempStatorRaw;
-uint16_t SID_m_ct_TempShellRaw;
+uint16_t SID_m_ct_AccRaw;
+uint16_t SID_m_ct_VBAT2Raw;
+uint16_t SID_m_ct_SHalfRaw;
 
-uint16_t  SID_m_ct_VRegRaw;
-uint16_t  SID_m_ct_TsensPRaw;
-uint16_t  SID_m_ct_TsensCRaw;
+uint16_t  SID_m_ct_SBreakRaw;
+uint16_t  SID_m_ct_SForwardRaw;
+uint16_t  SID_m_ct_SReverseRaw;
+
+uint16_t  SID_m_ct_ModeTempRaw;
+uint16_t  SID_m_ct_MotorTempRaw;
+uint16_t  SID_m_ct_SAccRaw;
+uint16_t SID_m_ct_VREFRaw;
+uint16_t SID_m_ct_VBATRaw;
+uint16_t SID_m_ct_REFRaw;
+
 
 uint8_t   DISABLE_FLAG = 0;	
 
@@ -53,7 +61,8 @@ _STATIC_ void Adc_TrigSrcInit(void);
 _STATIC_ void Adc_ControllerInit(void);
 _STATIC_ void Adc_PadConfig(void);
 
-
+static 
+void Adc_Var2Ptr(void);
 /*********************************************************************/
 /*  function name:  Adc_Init() 
 /*  description:    initialize the adc module
@@ -66,7 +75,8 @@ void Adc_Init(void)
 	Adc_PadConfig();
 	Adc_ControllerInit();
 	//Adc_Trigger();
-	//Adc_TrigSrcInit();  		
+	//Adc_TrigSrcInit();
+	Adc_Var2Ptr();  		
 }
 
 
@@ -113,19 +123,19 @@ void Adc_GetValue_1ms(void)
 	uint8_t i;
 	uint32_t Temp_CDATARaw_Sum;
 	
-  Temp_CDATARaw_Sum = 0;
+  /*Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
 	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO2_Array[i][0] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_CurExcRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_CurExcRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);*/
 }
 
 
 
 
 void SafetyControl(void)
-{
+{/*
 	if ( (SID_m_ct_V48Raw>3546)||//60V
 	     (SID_m_ct_TempPURaw<NTC_125DEG)||//125deg
 	     (SID_m_ct_TempPVRaw<NTC_125DEG)||//125deg
@@ -151,114 +161,171 @@ void SafetyControl(void)
 		}
      	
     }
+*/
 }
 
+uint16_t * SID_m_ct_FIFO1RawVoltagesTable[ADC_FIFO1_TOTAL_CH];
+uint16_t * SID_m_ct_FIFO0RawVoltagesTable[ADC_FIFO0_TOTAL_CH];
 
+static 
+void Adc_Var2Ptr(void)
+{
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_Half] = &SID_m_ct_SHalfRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_T15] = &SID_m_ct_T15Raw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_Forward] = &SID_m_ct_SForwardRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_VBAT2] = &SID_m_ct_VBAT2Raw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_Mode_Temp] = &SID_m_ct_ModeTempRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_VBAT] = &SID_m_ct_VBATRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_Motor_Temp] = &SID_m_ct_MotorTempRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_REF] = &SID_m_ct_REFRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_S_Break] = &SID_m_ct_SBreakRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_S_accelerator] = &SID_m_ct_SAccRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_S_Reverse] = &SID_m_ct_SReverseRaw;
+	SID_m_ct_FIFO1RawVoltagesTable[ADC_CH_VREF] = &SID_m_ct_VREFRaw;
+	
+	SID_m_ct_FIFO0RawVoltagesTable[ADC_CH_I_A_accelerator-ADC_FIFO1_TOTAL_CH] = &SID_m_ct_AccRaw;
+	SID_m_ct_FIFO0RawVoltagesTable[ADC_CH_12V-ADC_FIFO1_TOTAL_CH] = &SID_m_ct_V12Raw;
+	SID_m_ct_FIFO0RawVoltagesTable[ADC_CH_5V-ADC_FIFO1_TOTAL_CH] = &SID_m_ct_V5Raw;	
+}
 
 void Adc_GetValue_10ms(void)
+{
+	uint8_t i;
+	uint8_t j;		
+	uint32_t Temp_CDATARaw_Sum;
+	
+  	for (j=0; j<ADC_FIFO1_TOTAL_CH; j++)
+  	{
+	  	Temp_CDATARaw_Sum = 0;
+		for (i=0; i<ADC_FLT_TIME; i++)
+		{
+		   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][j] & ADC_RESULT_MASK;
+		}
+		*SID_m_ct_FIFO1RawVoltagesTable[j] = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);		  		
+  	}
+  	
+  	for (j=0; j<ADC_FIFO0_TOTAL_CH; j++)
+  	{
+	  	Temp_CDATARaw_Sum = 0;
+		for (i=0; i<ADC_FLT_TIME; i++)
+		{
+		   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][j] & ADC_RESULT_MASK;
+		}
+		*SID_m_ct_FIFO0RawVoltagesTable[j] = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);		  		
+  	}  	  	
+}
+
+/*void Adc_GetValue_10ms(void)
 {  
 	uint8_t i;
 	uint32_t Temp_CDATARaw_Sum;
 	
-  Temp_CDATARaw_Sum = 0;
+  	Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_CurRef-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_T15] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_CurRefRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_T15Raw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+
+  	Temp_CDATARaw_Sum = 0;
+	for (i = 0;i< ADC_FLT_TIME;i ++)
+	{
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_I_A_accelerator] & ADC_RESULT_MASK;
+	}
+	SID_m_ct_AccRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_V48-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_VBAT2] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_V48Raw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_VBAT2Raw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 		
 	
-   Temp_CDATARaw_Sum = 0;
+   	Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_V12] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_12V-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
 	}
 	SID_m_ct_V12Raw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);	
 	
-   Temp_CDATARaw_Sum = 0;
+   	Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_V10-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_Half] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_V10Raw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_SHalfRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 	
-   Temp_CDATARaw_Sum = 0;
+   	Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_V5] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_5V-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
 	}
 	SID_m_ct_V5Raw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 			
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_TempPU] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_S_Break] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_TempPURaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_SBreakRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[ADC_CH_TempPV][i] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_Forward] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_TempPVRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_SForwardRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 	
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_TempPW] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_S_Reverse] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_TempPWRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_SReverseRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 	
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_TempStator] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_Mode_Temp] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_TempStatorRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);	
+	SID_m_ct_ModeTempRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);	
 
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_TempShell-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_Motor_Temp] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_TempShellRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_MotorTempRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_TempExc] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_S_accelerator] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_TempExcRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_SAccRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 	
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_VReg0-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_VREF] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_VRegRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_VREFRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 	
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_TsensP-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_VBAT] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_TsensPRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
+	SID_m_ct_VBATRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);
 	
     Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
-	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO0_Array[i][ADC_CH_TsensC-ADC_FIFO1_TOTAL_CH] & ADC_RESULT_MASK;
+	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO1_Array[i][ADC_CH_REF] & ADC_RESULT_MASK;
 	}
-	SID_m_ct_TsensCRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);			
-}
+	SID_m_ct_REFRaw = (uint16_t)(Temp_CDATARaw_Sum/ADC_FLT_TIME);			
+}*/
 
 
 

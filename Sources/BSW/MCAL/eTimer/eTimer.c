@@ -95,10 +95,10 @@ static void eTimer0_Ch5_Init(void)
 
 void eTimer0_Init(void)
 {
-    eTimer0_Ch1_Init();
+    //eTimer0_Ch1_Init();
     eTimer0_Ch2_Init();
     eTimer0_Ch3_Init();
-    eTimer0_Ch4_Init();
+    //eTimer0_Ch4_Init();
     eTimer0_Ch5_Init();       
         
     //below are TIMER

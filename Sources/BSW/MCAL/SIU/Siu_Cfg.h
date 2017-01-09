@@ -328,6 +328,12 @@
 /*******************LIN Config Pad*****************************/
 
 /******************DIO Config Pad*******************************/
+#define O_S_SysPWRCtrl_PAD_NUM		99
+#define Buzzer_Ctrl_PAD_NUM			103
+
+
+
+
 //!<========Output=======
 //三相驱动使能，高电平有效
 #define CTL_PHASE_DRV_ENABLE_PAD_NUM		22

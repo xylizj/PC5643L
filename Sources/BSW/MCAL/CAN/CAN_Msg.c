@@ -155,9 +155,9 @@ extern volatile uint32_t RawVoltagesTable_FIFO3[CTU_FIFO3_THRESHOLD];
 void Tx_Msg_PhaseExcCur_Encode(void)
 {
 	*(uint16_t*)&Tx_Msg_PhaseCur.data[0] = SID_m_ct_CurPhaseURaw;//SID_m_i_CurPhaseURaw;
-	*(uint16_t*)&Tx_Msg_PhaseCur.data[2] = SID_m_ct_CurPhaseVRaw;//SID_m_i_CurPhaseVRaw;
+	//*(uint16_t*)&Tx_Msg_PhaseCur.data[2] = SID_m_ct_CurPhaseVRaw;//SID_m_i_CurPhaseVRaw;
 	*(uint16_t*)&Tx_Msg_PhaseCur.data[4] = SID_m_ct_CurPhaseWRaw;//SID_m_i_CurPhaseWRaw;
-	*(uint16_t*)&Tx_Msg_PhaseCur.data[6] = SID_m_ct_CurExcRaw;//SID_m_i_CurExc;
+	//*(uint16_t*)&Tx_Msg_PhaseCur.data[6] = SID_m_ct_CurExcRaw;//SID_m_i_CurExc;
 	//*(uint32_t*)&Tx_Msg_PhaseCur.data[0] = RawVoltagesTable_FIFO3[0];
 	//*(uint32_t*)&Tx_Msg_PhaseCur.data[4] = RawVoltagesTable_FIFO3[1];
 	//*(uint32_t*)&Tx_Msg_PhaseCur.data[0] = RawVoltagesTable_FIFO0_Array[0][4];
@@ -165,52 +165,18 @@ void Tx_Msg_PhaseExcCur_Encode(void)
 }
 
 void Tx_Msg_TempBridgeExc_Encode(void)
-{	
-	*(uint16_t*)&Tx_Msg_TempBridgeExc.data[0] = SID_m_ct_TempPURaw;//SID_m_u_TempPU;
-	*(uint16_t*)&Tx_Msg_TempBridgeExc.data[2] = SID_m_ct_TempPVRaw;//SID_m_u_TempPV;
-	*(uint16_t*)&Tx_Msg_TempBridgeExc.data[4] = SID_m_ct_TempPWRaw;//SID_m_u_TempPW;
-	*(uint16_t*)&Tx_Msg_TempBridgeExc.data[6] = SID_m_ct_TempExcRaw;//SID_m_u_TempExc;
-
-
-	//*(uint32_t*)&Tx_Msg_TempBridgeExc.data[0] = RawVoltagesTable_FIFO3[2];
-	//*(uint32_t*)&Tx_Msg_TempBridgeExc.data[4] = RawVoltagesTable_FIFO2_Array[0][0];
-	//*(uint32_t*)&Tx_Msg_TempBridgeExc.data[0] = RawVoltagesTable_FIFO0_Array[0][6];
-	//*(uint32_t*)&Tx_Msg_TempBridgeExc.data[4] = RawVoltagesTable_FIFO0_Array[0][7];
-}
+{}
 
 
 extern sint32 iD_ActualReq;
 extern sint32 SID_m_i_d;
 
 void Tx_Msg_Voltage_Encode(void)
-{	
-	*(uint32_t*)&Tx_Msg_Voltage.data[0] = iD_ActualReq;
-	*(uint32_t*)&Tx_Msg_Voltage.data[4] = SID_m_i_d;
-	/*
-	*(uint16_t*)&Tx_Msg_Voltage.data[0] = SID_m_ct_V48Raw;//SID_m_u_V48;
-	*(uint16_t*)&Tx_Msg_Voltage.data[2] = SID_m_ct_V12Raw;//SID_m_u_V12;
-	*(uint16_t*)&Tx_Msg_Voltage.data[4] = SID_m_ct_V10Raw;//SID_m_u_V10;
-	*(uint16_t*)&Tx_Msg_Voltage.data[6] = SID_m_ct_V5Raw;//SID_m_u_V5;
-	*/
-
-	//*(uint32_t*)&Tx_Msg_Voltage.data[0] = RawVoltagesTable_FIFO1_Array[0][0];
-	//*(uint32_t*)&Tx_Msg_Voltage.data[4] = RawVoltagesTable_FIFO1_Array[0][1];
-	//*(uint32_t*)&Tx_Msg_Voltage.data[0] = RawVoltagesTable_FIFO0_Array[0][8];
-	//*(uint32_t*)&Tx_Msg_Voltage.data[4] = RawVoltagesTable_FIFO0_Array[0][9];
-}
+{}
 
 
 void Tx_Msg_StatorShellRef_Encode(void)
-{	
-	*(uint16_t*)&Tx_Msg_StatorShellRef.data[0] = SID_m_ct_CurRefRaw;//SID_m_u_CurRef;
-	*(uint16_t*)&Tx_Msg_StatorShellRef.data[2] = SID_m_ct_TempStatorRaw;//SID_m_u_TempStator;
-	*(uint16_t*)&Tx_Msg_StatorShellRef.data[4] = SID_m_ct_TempShellRaw;//SID_m_u_TempShell;
-
-	//*(uint32_t*)&Tx_Msg_StatorShellRef.data[0] = RawVoltagesTable_FIFO1_Array[0][2];
-	//*(uint32_t*)&Tx_Msg_StatorShellRef.data[4] = RawVoltagesTable_FIFO1_Array[0][3];
-	//*(uint32_t*)&Tx_Msg_StatorShellRef.data[0] = RawVoltagesTable_FIFO0_Array[0][10];
-	//*(uint32_t*)&Tx_Msg_StatorShellRef.data[4] = RawVoltagesTable_FIFO0_Array[0][11];
-}
+{}
 
 void Tx_Msg_ADS1210_Encode(void)
 {

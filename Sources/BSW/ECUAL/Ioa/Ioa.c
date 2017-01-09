@@ -58,13 +58,15 @@ uint8_t SID_m_swt_RsolvLOTRaw;
 void Ioa_Init(void)
 {
 	//Ioa_GPIOInit();
-	SIU.PCR[CTL_PHASE_DRV_ENABLE_PAD_NUM].B.OBE = 1;//三相驱动使能，高电平有效
+	/*SIU.PCR[CTL_PHASE_DRV_ENABLE_PAD_NUM].B.OBE = 1;//三相驱动使能，高电平有效
 	Ioa_PhaseDrvDisable();
 	SIU.PCR[CTL_PHASE_DRV_FAULT_RESET_PAD_NUM].B.OBE = 1;//三相预驱故障复位，默认输出低电平
 	Ioa_PhaseDrvFaultReset();
 	
 	SIU.PCR[I_S_PHASEFLT_PAD_NUM].B.IBE = 1;
-	SIU.PCR[I_S_EXCFLT_PAD_NUM].B.IBE = 1;
+	SIU.PCR[I_S_EXCFLT_PAD_NUM].B.IBE = 1;*/
+	
+	//SIU.PCR[O_S_SysPWRCtrl_PAD_NUM].B.OBE = 1;
 }
 
 
@@ -101,4 +103,6 @@ void Ioa_PhaseDrvFaultReset(void)
 
 void Ioa_Output(void)
 {
+	SIU.GPDO[O_S_SysPWRCtrl_PAD_NUM].R=1;
+	
 }
