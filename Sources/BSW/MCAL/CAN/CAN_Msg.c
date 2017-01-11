@@ -38,12 +38,12 @@ const boolean CAN_C_st_RX_MsgEnable_XCP	= TRUE; //07
 
       		
 /******************************************************/  
-const boolean CAN_C_st_TX_MsgEnable_PhaseCur		= TRUE; //01     	
+const boolean CAN_C_st_TX_MsgEnable_PhaseCur		= FALSE; //01     	
 const boolean TCAN_C_st_TX_MsgEnable_TempBridgeExc		= FALSE; //02     	
 const boolean CAN_C_st_TX_MsgEnable_Voltage	= FALSE; //03  		   	
 const boolean CAN_C_st_TX_MsgEnable_StatorShellRef	= FALSE; //04
 const boolean CAN_C_st_TX_MsgEnable_ADS1210	= FALSE; //05    	
-const boolean CAN_C_st_TX_MsgEnable_Debug	= FALSE; //06   	
+const boolean CAN_C_st_TX_MsgEnable_Debug	= TRUE; //06   	
 /******************************************************/ 
 
 /********************************************************************
@@ -179,23 +179,27 @@ void Tx_Msg_StatorShellRef_Encode(void)
 {}
 
 void Tx_Msg_ADS1210_Encode(void)
-{
+{/*
 	*(uint16_t*)&Tx_Msg_ADS1210.data[0] = (uint16_t)SID_m_n_MotSpdRaw;
 	*(uint32_t*)&Tx_Msg_ADS1210.data[2] = SID_m_phi_RotPos;
 	Tx_Msg_ADS1210.data[6] = SID_m_swt_RslvDOSRaw;
 	Tx_Msg_ADS1210.data[7] = SID_m_swt_RslvLOTRaw;
-}
+*/}
 
 
 
 
 extern sint32 iQ_ActualReq;
 extern sint32 SID_m_i_q;
+extern uint16_t   SID_m_n_MechRPS;
+extern uint32_t   SID_m_ct_PosRaw;
+
 
 void Tx_Msg_Debug_Encode(void)
 {	
-	*(uint32_t*)&Tx_Msg_Debug.data[0] = iQ_ActualReq;
-	*(uint32_t*)&Tx_Msg_Debug.data[4] = SID_m_i_q;
+	*(uint16_t*)&Tx_Msg_Debug.data[0] = SID_m_n_MechRPS;
+	*(uint16_t*)&Tx_Msg_Debug.data[2] = 0;
+	*(uint32_t*)&Tx_Msg_Debug.data[4] = SID_m_ct_PosRaw;
 }
 
 

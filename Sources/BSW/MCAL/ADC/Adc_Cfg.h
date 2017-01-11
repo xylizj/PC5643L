@@ -43,19 +43,19 @@ Modify records:
 #define   ADC_CH_S_Reverse       10 	//ADC0_8
 #define   ADC_CH_VREF	         11 	//ADC1_8
 
-#define   ADC_FIFO1_TOTAL_CH		 12
 
 //below are in FIFO0
-#define   ADC_CH_I_A_accelerator 13 	//ADC1_0
-#define   ADC_CH_12V		     15 	//ADC1_1
-#define   ADC_CH_5V          	 16     //ADC1_5
+#define   ADC_CH_I_A_accelerator 12 	//ADC1_0
+#define   ADC_CH_12V		     13 	//ADC1_1
+#define   ADC_CH_5V          	 14     //ADC1_5
 
+#define   ADC_FIFO1_TOTAL_CH		 12
 #define   ADC_FIFO0_TOTAL_CH		 3
 
 /******************************************/
 #define   ADC_CH_NUM             15     //DO NOT CHANGE
 #define   ADC_FLT_TIME           10     
-#define   CTUFIFO3_CH_NUM        3
+#define   CTUFIFO3_CH_NUM        2
 #define   CTUFIFO2_CH_NUM        1
 #define   CTUFIFO2_FLT_TIME      10
 
@@ -80,13 +80,13 @@ Modify records:
 
 
 
-
+/*
 #define ADC0_NUMBER_OF_CHANNELS		6
 #define ADC0_NUMBER_OF_DATA_BYTES	(4*ADC0_NUMBER_OF_CHANNELS)
 
 #define ADC1_NUMBER_OF_CHANNELS		9
 #define ADC1_NUMBER_OF_DATA_BYTES	(4*ADC1_NUMBER_OF_CHANNELS)
-
+*/
 
 
 

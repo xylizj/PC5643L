@@ -11,8 +11,8 @@ extern void ConfigureDMA3_ADS1210_Ioctl_high(void);
 extern void ConfigureDMA14_ADS1210_Push(void);
 extern void ConfigureDMA13_ADS1210_Pop(void);
 
-
-
+extern void ConfigureDMA11_eTimer0Ch1(void);
+extern void ConfigureDMA12_eTimer0Ch0(void);
 
 
 

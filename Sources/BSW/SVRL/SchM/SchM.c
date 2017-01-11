@@ -49,7 +49,6 @@
 
 #include "foc.h"
 
-#include "EXC.h"
 
 
 #include "ee.h"
@@ -98,16 +97,20 @@ void SchM_BSW_Init(void)
 	#if 0 //20161128 xyl comment
 	/*initDSPI_1();
 	initAD2S1210();
-	delay_us(25000);*/
+	delay_us(25000);
+	ConfigureDMA15_ADS1210_Ioctl_low();
+	ConfigureDMA3_ADS1210_Ioctl_high();
+	ConfigureDMA14_ADS1210_Push();
+	ConfigureDMA13_ADS1210_Pop();*/
 	#endif
 
-	#if 0
-	/*PWM_PadConfig();
+	#if 1
+	PWM_PadConfig();
 	ConfigureFlexPWM0Sub0();
 	ConfigureFlexPWM0Sub1();
 	ConfigureFlexPWM0Sub2();
-	FlexPWM0Sub3(0);
-	LaunchFlexPWM0_modules012();*/
+	//FlexPWM0Sub3(0);
+	LaunchFlexPWM0_modules012();
 	#endif
 
 
@@ -122,20 +125,17 @@ void SchM_BSW_Init(void)
     	
 	Gpt_Init();	
 	Gpt_StartTimer();
-
-
-	/*ConfigureDMA15_ADS1210_Ioctl_low();
-	ConfigureDMA3_ADS1210_Ioctl_high();
-	ConfigureDMA14_ADS1210_Push();
-	ConfigureDMA13_ADS1210_Pop();*/
 	
-	eTimer0_Init();
-	//eTimer1_Encode_Init();//eTimer1_Init();//20161128 xyl modify
+	eTimer1_Init();
+	
+	eTimer0_Encode_Init();
+	ConfigureDMA11_eTimer0Ch1();
+	//ConfigureDMA12_eTimer0Ch0();//*/
 	
 	
 	#ifdef USE_INTC
 	EXCEP_InitExceptionHandlers();
-	INTC_InstallINTCInterruptHandler(eTimer_0_TC5IR_Isr, 162, 2);
+	INTC_InstallINTCInterruptHandler(eTimer_1_TC5IR_Isr, 173, 2);
 	INTC.CPR.B.PRI = 0;	
 	INTC_InitINTCInterrupts();
 	#endif
@@ -155,10 +155,7 @@ void SchM_BSW_Init(void)
 void SchM_ASW_Init(void)
 {
 	//SetFlexPWM0Sub3_val2(3200/2);//
-	//EXCLoopInit();
-	
-	//SID_initialize();
-	//SID_F_initialize();
+
 	//focFastLoopInit();
 }
 /*******************************************************************************
@@ -193,10 +190,10 @@ void SchM_Period1Ms(void)
 	CANTxRx_Timer();
 	CANTxRx_State();
 	#endif
-
-	//Adc_GetValue_1ms();
 	
-	//EXCLoop();//20160621
+	//Ioa_Input();
+	EncodePosGet();
+	Enc_SpdMeas();
 }
 
 /*******************************************************************************
@@ -223,14 +220,13 @@ void SchM_Period2Ms(void)
 *******************************************************************************/
 void SchM_Period10Ms(void)
 {
-	Ioa_Input();
+	//Ioa_Input();
 	#ifdef USE_XCP
 	Xcp_Service(0); 	
 	#endif
 
 	Adc_GetValue_10ms();
-	SafetyControl();
-	//SID_step();
+	//SafetyControl();
 	/*if (SID_m_ct_V48Raw > 3546)
 	{
 		SID_m_u_V48 = (SInt32)(605552 * 3546 );
@@ -301,80 +297,7 @@ void SchM_Period100Ms(void)
 	Xcp_DataHandle();
 	#endif
 	
-	
-	/*if(sch_1000ms_en == 1)
-	{
-		sch_100ms_cnt ++;
-		
-		#ifdef PN_MEASURE_PI_Q
-		cur_req_q_ov_en = 1;
-		if(sch_100ms_cnt>=CUR_REQ_0_CNT && sch_100ms_cnt<(CUR_REQ_0_CNT+CUR_REQ_NON_0_CNT))
-		{
-			cur_req_q_ov = -5000;
-		}							
-		if(sch_100ms_cnt>=(CUR_REQ_0_CNT+CUR_REQ_NON_0_CNT))
-		{
-			cur_req_q_ov = 0;
-			sch_100ms_cnt = 0;
-		}		
-		#endif		
-		
-		#ifdef PN_MEASURE_PI_D
-		cur_req_d_ov_en = 1;
-		if(sch_100ms_cnt>=CUR_REQ_0_CNT && sch_100ms_cnt<(CUR_REQ_0_CNT+CUR_REQ_NON_0_CNT))
-		{
-			cur_req_d_ov = -5000;
-		}						
-		if(sch_100ms_cnt>=(CUR_REQ_0_CNT+CUR_REQ_NON_0_CNT))
-		{
-			cur_req_d_ov = 0;
-			sch_100ms_cnt = 0;
-		}	
-		#endif		
-	}	
-	else
-	{
-		#ifdef PN_MEASURE_PI_Q
-		cur_req_q_ov = 0;
-		#endif
-		
-		#ifdef PN_MEASURE_PI_D
-		cur_req_d_ov = 0;
-		#endif
-		
-		if(1 == dq_cc_OV_EN)//20160620
-		{
-			dq_cc_OV_EN = 0;
-			stc_hMDRV_dAxisPI.f32CC1sc = d_cc1_OV;
-			stc_hMDRV_dAxisPI.f32CC2sc = d_cc2_OV;
-			stc_hMDRV_dAxisPI.u16NShift = d_N_Shift;
-			stc_hMDRV_dAxisPI.f32Acc = 0;
-			stc_hMDRV_dAxisPI.f32InErrK1 = 0;
-			
-			dAxisPI_P.f32PropGain = stc_hMDRV_dAxisPI.f32CC1sc;		
-			dAxisPI_P.f32IntegGain = 0;
-			dAxisPI_P.s16PropGainShift = 2;
-			dAxisPI_P.f32IntegGain = 0;
-			dAxisPI_P.f32IntegPartK_1 = 0;
-			dAxisPI_P.u16LimitFlag = 0;
-			
-			
-			
-			stc_hMDRV_qAxisPI.f32CC1sc = q_cc1_OV;
-			stc_hMDRV_qAxisPI.f32CC2sc = q_cc2_OV;
-			stc_hMDRV_qAxisPI.u16NShift = q_N_Shift;
-			stc_hMDRV_qAxisPI.f32Acc = 0;
-			stc_hMDRV_qAxisPI.f32InErrK1 = 0;
-			
-			
-			qAxisPI_P.f32PropGain = stc_hMDRV_qAxisPI.f32CC1sc;		
-			qAxisPI_P.f32IntegGain = 0;
-			qAxisPI_P.s16PropGainShift = 2;
-			qAxisPI_P.f32IntegGain = 0;
-			qAxisPI_P.f32IntegPartK_1 = 0;
-			qAxisPI_P.u16LimitFlag = 0;
-		}
-	}*/
+	Ioa_Output();
 }
 
 

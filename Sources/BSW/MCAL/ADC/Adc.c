@@ -18,21 +18,18 @@ extern volatile uint32_t RawVoltagesTable_FIFO1_Array[BITER_CNT][CTU_FIFO1_THRES
 extern volatile uint32_t RawVoltagesTable_FIFO0_Array[BITER_CNT][CTU_FIFO0_THRESHOLD];
 extern volatile uint32_t  ADC_CDATARaw[ADC_FLT_TIME][ADC_CH_NUM];
 //uint32_t Adc0_result[ADC0_NUMBER_OF_CHANNELS];
-extern uint32_t Adc1_result[ADC1_NUMBER_OF_CHANNELS];
+//extern uint32_t Adc1_result[ADC1_NUMBER_OF_CHANNELS];
 
 
 
 uint16_t SID_m_ct_CurPhaseURaw;
 //uint16_t SID_m_ct_CurPhaseVRaw;
 uint16_t SID_m_ct_CurPhaseWRaw;
-//uint16_t SID_m_ct_CurExcRaw;
 
 uint16_t SID_m_ct_TempPURaw;
 uint16_t SID_m_ct_TempPVRaw;
 uint16_t SID_m_ct_TempPWRaw;
-//uint16_t SID_m_ct_TempExcRaw;
 
-//uint16_t SID_m_ct_V48Raw;
 uint16_t SID_m_ct_V12Raw;
 uint16_t SID_m_ct_T15Raw;
 uint16_t SID_m_ct_V5Raw;
@@ -108,7 +105,7 @@ void Adc_Trigger(void)
 void Adc_F_GetValue(void)
 {
 	SID_m_ct_CurPhaseURaw = (uint16_t)(RawVoltagesTable_FIFO3[0] & ADC_RESULT_MASK);
-	SID_m_ct_CurPhaseVRaw = (uint16_t)(RawVoltagesTable_FIFO3[1] & ADC_RESULT_MASK);				
+	//SID_m_ct_CurPhaseVRaw = (uint16_t)(RawVoltagesTable_FIFO3[1] & ADC_RESULT_MASK);				
 	SID_m_ct_CurPhaseWRaw = (uint16_t)(RawVoltagesTable_FIFO3[2] & ADC_RESULT_MASK);	
 }
 /*********************************************************************/
@@ -119,11 +116,11 @@ void Adc_F_GetValue(void)
 /*  remark:
 /*********************************************************************/
 void Adc_GetValue_1ms(void)
-{
+{/*
 	uint8_t i;
 	uint32_t Temp_CDATARaw_Sum;
 	
-  /*Temp_CDATARaw_Sum = 0;
+  Temp_CDATARaw_Sum = 0;
 	for (i = 0;i< ADC_FLT_TIME;i ++)
 	{
 	   Temp_CDATARaw_Sum +=	RawVoltagesTable_FIFO2_Array[i][0] & ADC_RESULT_MASK;
@@ -164,8 +161,8 @@ void SafetyControl(void)
 */
 }
 
-uint16_t * SID_m_ct_FIFO1RawVoltagesTable[ADC_FIFO1_TOTAL_CH];
-uint16_t * SID_m_ct_FIFO0RawVoltagesTable[ADC_FIFO0_TOTAL_CH];
+uint16_t  *SID_m_ct_FIFO1RawVoltagesTable[ADC_FIFO1_TOTAL_CH];
+uint16_t  *SID_m_ct_FIFO0RawVoltagesTable[ADC_FIFO0_TOTAL_CH];
 
 static 
 void Adc_Var2Ptr(void)
@@ -379,66 +376,73 @@ _STATIC_ void Adc_ControllerInit(void)
 
 _STATIC_ void Adc_PadConfig(void)
 {	
-	/* MPC5643L: Config pad B[12] pin as ADC0 AN[14] input */
-  SIU.PCR[28].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[28].B.PA = 1;//01: Alternative Mode 0,ADC_0; 10: Alternative Mode 1,ADC_1
-
-	/* MPC5643L: Config pad B[11] pin as ADC0 AN[13] input */
-  SIU.PCR[27].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[27].B.PA = 1;//01: Alternative Mode 0,ADC_0; 10: Alternative Mode 1,ADC_1
-
-	/* MPC5643L: Config pad B[10] pin as ADC0 AN[12] input */
+	/* MPC5643L: Config pad B[10] pin as ADC1 AN[12] input */
   SIU.PCR[26].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[26].B.PA = 1;//01: Alternative Mode 0,ADC_0; 10: Alternative Mode 1,ADC_1
+  SIU.PCR[26].B.PA = 2;//01: Alternative Mode 0,ADC_0; 10: Alternative Mode 1,ADC_1
 
 	/* MPC5643L: Config pad B[9] pin as ADC0 AN[11] input */
   SIU.PCR[25].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
   SIU.PCR[25].B.PA = 1;//01: Alternative Mode 0,ADC_0; 10: Alternative Mode 1,ADC_1
-             
-	/* MPC5643L: Config pad B[14] pin as ADC1 AN[1] input */
+
+  /* MPC5643L: Config pad B[13] pin as ADC1 AN[0] input */
+  SIU.PCR[29].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[29].B.PA = 2;
+  
+  	/* MPC5643L: Config pad B[14] pin as ADC1 AN[1] input */
   SIU.PCR[30].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
   SIU.PCR[30].B.PA = 3;
 
-	/* MPC5643L: Config pad E[10] pin as ADC1 AN[8] input */
-  SIU.PCR[74].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[74].B.PA = 1;
- 
+  	/* MPC5643L: Config pad B[15] pin as ADC1 AN[2] input */
+  SIU.PCR[31].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[31].B.PA = 2;
+
+  	/* MPC5643L: Config pad C[0] pin as ADC1 AN[3] input */
+  SIU.PCR[32].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[32].B.PA = 1;
+
  	/* MPC5643L: Config pad C[1] pin as ADC0 AN[2] input */
   SIU.PCR[33].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
   SIU.PCR[33].B.PA = 1;
+
+ 	/* MPC5643L: Config pad C[2] pin as ADC0 AN[3] input */
+  SIU.PCR[34].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[34].B.PA = 1;
+ 
+ 	/* MPC5643L: Config pad E[0] pin as ADC1 AN[5] input */
+  SIU.PCR[64].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[64].B.PA = 1;
 
  	/* MPC5643L: Config pad E[4] pin as ADC0 AN[7] input */
   SIU.PCR[68].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
   SIU.PCR[68].B.PA = 1;
 
- 	/* MPC5643L: Config pad B[7] pin as ADC0 AN[0] input */
-  SIU.PCR[23].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[23].B.PA = 2;
-
-  /* MPC5643L: Config pad E[2] pin as ADC0 AN[5] input */
-  SIU.PCR[66].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[66].B.PA = 1;
-
-  /* MPC5643L: Config pad E[5] pin as ADC0 AN[8] input */
+ 	/* MPC5643L: Config pad E[5] pin as ADC0 AN[8] input */
   SIU.PCR[69].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
   SIU.PCR[69].B.PA = 1;
 
-  /* MPC5643L: Config pad C[2] pin as ADC0 AN[3] input */
-  SIU.PCR[34].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[34].B.PA = 1;
+ 	/* MPC5643L: Config pad E[6] pin as ADC0 AN[4] input */
+  SIU.PCR[70].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[70].B.PA = 1;
 
+ 	/* MPC5643L: Config pad E[7] pin as ADC0 AN[6] input */
+  SIU.PCR[71].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[71].B.PA = 1;
 
-  /* MPC5643L: Config pad B[15] pin as ADC1 AN[2] input */
-  SIU.PCR[31].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[31].B.PA = 2;
-
-  /* MPC5643L: Config pad E[9] pin as ADC1 AN[7] input */
+ 	/* MPC5643L: Config pad E[9] pin as ADC1 AN[7] input */
   SIU.PCR[73].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
   SIU.PCR[73].B.PA = 1;
 
-  /* MPC5643L: Config pad B[13] pin as ADC1 AN[0] input */
-  SIU.PCR[29].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
-  SIU.PCR[29].B.PA = 2;
+	/* MPC5643L: Config pad E[10] pin as ADC1 AN[8] input */
+  SIU.PCR[74].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[74].B.PA = 1;
+
+ 	/* MPC5643L: Config pad E[11] pin as ADC1 AN[4] input */
+  SIU.PCR[75].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[75].B.PA = 1;
+
+ 	/* MPC5643L: Config pad E[12] pin as ADC1 AN[6] input */
+  SIU.PCR[76].B.APC = 1;//1: Analog input path switch can be enabled by the ADC.0x2XXX
+  SIU.PCR[76].B.PA = 1;
 }
 
 

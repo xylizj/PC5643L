@@ -4,7 +4,6 @@
 #include "foc.h"
 #include "AD2S1210.h"
 #include "Adc.h"
-#include "SID_F.h"
 #include "SchM.h"
 #include "FlexPWM.h"
 
@@ -79,13 +78,13 @@ void AcquirePhaseCur(void)
 		DANGER_FLAG = 1;
 	}
 	//*********************//
-			
+	/*		
 	{//Phase current normalization BEGIN!!
 	    SID_m_i_CurPhaseU = (SInt32)(((SInt16)(SID_m_ct_CurPhaseURaw-SID_m_ct_CurPhaseU_Ref))<<20);//*1048576
 	    //SID_m_i_CurPhaseV = (SInt32)(((SInt16)(SID_m_ct_CurPhaseVRaw-SID_m_ct_CurPhaseV_Ref))<<20);
       	SID_m_i_CurPhaseW = (SInt32)(((SInt16)(SID_m_ct_CurPhaseWRaw-SID_m_ct_CurPhaseW_Ref))<<20);
 	}//Phase current normalization END!!
-	SID_m_i_CurPhase_sum = SID_m_i_CurPhaseU+SID_m_i_CurPhaseV+SID_m_i_CurPhaseW;	
+	SID_m_i_CurPhase_sum = SID_m_i_CurPhaseU+SID_m_i_CurPhaseV+SID_m_i_CurPhaseW;*/	
 }
 
 
@@ -107,15 +106,17 @@ void UpdatePWM_MDRV(void)
 }//Update PWM VALx END!!
 
 
-void eTimer_0_TC5IR_Isr(void) 
+void eTimer_1_TC5IR_Isr(void) 
 {
-	ETIMER_0.CHANNEL[5].STS.B.TCF=1; 
+	ETIMER_1.CHANNEL[5].STS.B.TCF=1; 
 
 	//GetMotorVel();
 	//delay_us(2);
 	//ReadMotorVel();	
 	
-	AcquirePhaseCur();
+	SID_m_ct_CurPhaseURaw = (uint16_t)(RawVoltagesTable_FIFO3[0] & ADC_RESULT_MASK);
+	SID_m_ct_CurPhaseWRaw = (uint16_t)(RawVoltagesTable_FIFO3[1] & ADC_RESULT_MASK);
+	//AcquirePhaseCur();
 	
 	//Enc_SpdMeas();//20161128 xyl add
 	

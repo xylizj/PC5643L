@@ -15,25 +15,26 @@ extern volatile uint32_t RawVoltagesTable_FIFO0_Array[BITER_CNT][CTU_FIFO0_THRES
 
 
 extern uint16_t SID_m_ct_CurPhaseURaw;
-extern uint16_t SID_m_ct_CurPhaseVRaw;
 extern uint16_t SID_m_ct_CurPhaseWRaw;
-//extern uint16_t SID_m_ct_CurExcRaw;
-
 extern uint16_t SID_m_ct_TempPURaw;
 extern uint16_t SID_m_ct_TempPVRaw;
-extern uint16_t SID_m_ct_TempPWRaw;
-extern uint16_t SID_m_ct_TempExcRaw;
-
-extern uint16_t SID_m_ct_V48Raw;
+extern uint16_t SID_m_ct_TempPWRaw; 
 extern uint16_t SID_m_ct_V12Raw;
-extern uint16_t SID_m_ct_V10Raw;
+extern uint16_t SID_m_ct_T15Raw;
 extern uint16_t SID_m_ct_V5Raw;
-
-extern uint16_t SID_m_ct_CurRefRaw;
-extern uint16_t SID_m_ct_TempStatorRaw;
-extern uint16_t SID_m_ct_TempShellRaw;
-
-
+extern uint16_t SID_m_ct_AccRaw;
+extern uint16_t SID_m_ct_VBAT2Raw;
+extern uint16_t SID_m_ct_SHalfRaw;
+extern uint16_t  SID_m_ct_SBreakRaw;
+extern uint16_t  SID_m_ct_SForwardRaw;
+extern uint16_t  SID_m_ct_SReverseRaw;
+extern uint16_t  SID_m_ct_ModeTempRaw;
+extern uint16_t  SID_m_ct_MotorTempRaw;
+extern uint16_t  SID_m_ct_SAccRaw;
+extern uint16_t SID_m_ct_VREFRaw;
+extern uint16_t SID_m_ct_VBATRaw;
+extern uint16_t SID_m_ct_REFRaw;
+ 
 
 extern void Adc_Init(void);
 extern void Adc0_CtuTrigger(void);

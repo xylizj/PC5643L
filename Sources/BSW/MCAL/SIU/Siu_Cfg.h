@@ -271,6 +271,11 @@
 						   FS_GPIO_INPUT_BUFFER_ENABLE+\
 						   FS_GPIO_WEAK_PULL_UP	
 
+/* eTimer_0 pad set */
+#define eTimer_0_ETC_CONFIG     FS_GPIO_ALTERNATE_FUNCTION1 + \
+						   FS_GPIO_INPUT_BUFFER_ENABLE
+
+
 /* DIO set and get value */
 #define SET_STATUS(index)                (SIU.GPDO[index].R=1)
 #define RESET_STATUS(index)              (SIU.GPDO[index].R=0)
@@ -330,6 +335,8 @@
 /******************DIO Config Pad*******************************/
 #define O_S_SysPWRCtrl_PAD_NUM		99
 #define Buzzer_Ctrl_PAD_NUM			103
+#define O_SPD_CTRL_PAD_NUM			51
+#define Relay_Ctrl_PAD_NUM			55
 
 
 

@@ -7,7 +7,7 @@
 
 
 
-extern void eTimer_0_TC5IR_Isr(void);
+extern void eTimer_1_TC5IR_Isr(void);
 
 
 extern  uint8_t  DANGER_FLAG;

@@ -1,6 +1,7 @@
 #include "MPC5643L.h"
 #include "FlexPWM.h"
 #include "Adc.h"
+#include "ctu.h"
 
 static void DualFifoChaChb(uint8_t cmd_no, uint8_t fifo, uint8_t cha, uint8_t chb)
 {
@@ -13,69 +14,47 @@ static void DualFifoChaChb(uint8_t cmd_no, uint8_t fifo, uint8_t cha, uint8_t ch
 }
 
 
-static void Adc01DualCommonChan(uint8_t cmd_no, uint8_t fifo, uint8_t ch)
+static void SingleConvCmd(uint8_t cmd_no, uint8_t fifo, uint8_t su, uint8_t ch)
+{	
+	CTU.CLR_SCM[cmd_no].B.CIR = 0;//no ISR
+	CTU.CLR_SCM[cmd_no].B.LC = 0;//Last command
+	CTU.CLR_SCM[cmd_no].B.CMS = 0;//single conv
+	CTU.CLR_SCM[cmd_no].B.FIFO = fifo;
+	CTU.CLR_SCM[cmd_no].B.SU = su;//ADC1 or ADC1
+	CTU.CLR_SCM[cmd_no].B.CH = ch;//
+}
+
+static inline
+void dummy_command_dual(uint8_t cmd_no)
 {
 	CTU.CLR_DCM[cmd_no].B.CIR = 0;//no ISR
-	CTU.CLR_DCM[cmd_no].B.LC = 0;//Last command
-	CTU.CLR_DCM[cmd_no].B.CMS = 1;//dual conv
-	CTU.CLR_DCM[cmd_no].B.FIFO = fifo;//FIFOfifo
-	CTU.CLR_DCM[cmd_no].B.CHB = ch;//ADC1_ch
-	CTU.CLR_DCM[cmd_no].B.CHA = ch;//ADC0_ch	
+	CTU.CLR_DCM[cmd_no].B.LC = 1;//Last command 
+	CTU.CLR_DCM[cmd_no].B.CMS = 1;//dual conv	
 }
 
 static void ConfigureCmdList(void)
 {
 	//Command list control registers
 	CTU.CLCR1.B.T0INDEX = 0;/* Trigger 0 command list - first command address */
-	CTU.CLCR1.B.T1INDEX = 4;/* Trigger 1 command list - first command address */
-	//CTU.CLCR1.B.T2INDEX = 4;/* Trigger 2 command list - first command address */
-	//Command list register
+	CTU.CLCR1.B.T1INDEX = 2;/* Trigger 1 command list - first command address */
 	//FIFO3 Phase current
-	//dual
-	DualFifoChaChb(0,3,11,12);
-	//dummy command
-	//dual
-	CTU.CLR_DCM[1].B.CIR = 0;//no ISR
-	CTU.CLR_DCM[1].B.LC = 1;//Last command 
-	CTU.CLR_DCM[1].B.CMS = 1;//dual conv
+	DualFifoChaChb(0,CTU_FIFO3,11,12);
+
+	dummy_command_dual(1);
 	
 	//all ADC channel in dual-conv mode
-	//FIFO1
-	Adc01DualCommonChan(2,1,2); 
-	Adc01DualCommonChan(3,1,3); 
-	Adc01DualCommonChan(4,1,4); 
-	Adc01DualCommonChan(5,1,6); 
-	Adc01DualCommonChan(6,1,7); 
-	Adc01DualCommonChan(7,1,8); 
+	DualFifoChaChb(2,CTU_FIFO1,2,2);
+	DualFifoChaChb(3,CTU_FIFO1,3,3);
+	DualFifoChaChb(4,CTU_FIFO1,4,4);
+	DualFifoChaChb(5,CTU_FIFO1,6,6);
+	DualFifoChaChb(6,CTU_FIFO1,7,7);
+	DualFifoChaChb(7,CTU_FIFO1,8,8); 
    
-   	//FIFO0
-	//single	
-	CTU.CLR_SCM[8].B.CIR = 0;//no ISR
-	CTU.CLR_SCM[8].B.LC = 0;//Last command
-	CTU.CLR_SCM[8].B.CMS = 0;//single conv
-	CTU.CLR_SCM[8].B.FIFO = 0;//FIFO0
-	CTU.CLR_SCM[8].B.SU = 1;//ADC1
-	CTU.CLR_SCM[8].B.CH = 0;//ADC1_0
-
-	CTU.CLR_SCM[9].B.CIR = 0;//no ISR
-	CTU.CLR_SCM[9].B.LC = 0;//Last command
-	CTU.CLR_SCM[9].B.CMS = 0;//single conv
-	CTU.CLR_SCM[9].B.FIFO = 0;//FIFO0
-	CTU.CLR_SCM[9].B.SU = 1;//ADC1
-	CTU.CLR_SCM[9].B.CH = 1;//ADC1_1
-
-	CTU.CLR_SCM[10].B.CIR = 0;//no ISR
-	CTU.CLR_SCM[10].B.LC = 0;//Last command
-	CTU.CLR_SCM[10].B.CMS = 0;//single conv
-	CTU.CLR_SCM[10].B.FIFO = 0;//FIFO0
-	CTU.CLR_SCM[10].B.SU = 1;//ADC1
-	CTU.CLR_SCM[10].B.CH = 5;//ADC1_5
+	SingleConvCmd(8, CTU_FIFO0, ADC_NO1, 0);
+	SingleConvCmd(9, CTU_FIFO0, ADC_NO1, 1);
+	SingleConvCmd(10, CTU_FIFO0, ADC_NO1, 5);
 	
-	//dummy command
-	//dual
-	CTU.CLR_DCM[11].B.CIR = 0;//no ISR
-	CTU.CLR_DCM[11].B.LC = 1;//Last command 
-	CTU.CLR_DCM[11].B.CMS = 1;//dual conv
+	dummy_command_dual(11);
 }
 
 
@@ -84,7 +63,6 @@ static void ConfigureAdcCommand(void)
 	//Trigger x Compare Register Value
 	CTU.T0CR.R = 1;
 	CTU.T1CR.R = 1;//600/120M=5us
-	//CTU.T2CR.R = 600+240;//240/120M=2us
 	//Trigger Handler control registers
 	CTU.THCR1.B.T0_E = 1;/* Trigger 0 enable */
 	CTU.THCR1.B.T0_ADCE = 1;/* Trigger 0 ADC Command output enable */
@@ -93,9 +71,6 @@ static void ConfigureAdcCommand(void)
 	
 	CTU.THCR1.B.T1_E = 1;/* Trigger 1 enable */
 	CTU.THCR1.B.T1_ADCE = 1;/* Trigger 1 ADC Command output enable */
-	
-	//CTU.THCR1.B.T2_E = 1;/* Trigger 2 enable */
-	//CTU.THCR1.B.T2_ADCE = 1;/* Trigger 2 ADC Command output enable */
 	
 	ConfigureCmdList();
 }
@@ -108,8 +83,6 @@ static void ConfigureFifo(void)
 	//CTU.CR.B.DMA_EN2 = 1;//Enable FIFO2 DMA 
 	CTU.CR.B.DMA_EN1 = 1;//Enable FIFO1 DMA 
 	CTU.CR.B.DMA_EN0 = 1;//Enable FIFO0 DMA 
-
-  //CTU.FCR.B.FIFO_OVERFLOW_EN0 = 1; // Enable FIFO OVERFLOW Interrupt request
 
 	CTU.TH1.B.THRESHOLD3 = CTU_FIFO3_THRESHOLD-1;
 	//CTU.TH1.B.THRESHOLD2 = CTU_FIFO2_THRESHOLD-1;
@@ -138,7 +111,7 @@ static void Configure_Reload(void)
 	CTU.TGSCCR.R = 0xFFFF;//20160520 xyl modify 
 	CTU.TGSCRR.R = 0;//TGS counter reload register,Counter Reload Value
 
-	CTU.TGSISR.B.I13_RE = 1;/* eTimer0 Rising  Edge Enable */
+	CTU.TGSISR.B.I14_RE = 1;/* eTimer1 Rising  Edge Enable */
 	CTU.TGSISR.B.I0_RE = 1;/* PWM Reload Rising  Edge Enable */
 	CTU.TGSCR.B.TGS_M  = 1;//SEQ mode
 	CTU.TGSCR.B.MRS_SM  = 0;/* MRS Selection in Sequential Mode */

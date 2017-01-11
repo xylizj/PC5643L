@@ -488,11 +488,11 @@ void ConfigureDMA13_ADS1210_Pop(void)
 }
 
 
-extern uint16_t   SID_m_ct_eTimer1Ch0Capt1;
+extern uint16_t   SID_m_ct_eTimer0Ch0Capt1;
 
-void ConfigureDMA12_eTimer1Ch0(void)
+void ConfigureDMA12_eTimer0Ch0(void)
 {
-	EDMA.CHANNEL[12].TCDWORD0_.B.SADDR = (uint32_t) (&ETIMER_1.CHANNEL[0].CAPT1.R);   // Source Address 	
+	EDMA.CHANNEL[12].TCDWORD0_.B.SADDR = (uint32_t) (&ETIMER_0.CHANNEL[0].CAPT1.R);   // Source Address 	
    
    EDMA.CHANNEL[12].TCDWORD4_.B.SMOD  = 0;	    //  Source address modulo
    EDMA.CHANNEL[12].TCDWORD4_.B.SSIZE = 1;	    //  Source transfer size : 16 Bits 
@@ -507,7 +507,7 @@ void ConfigureDMA12_eTimer1Ch0(void)
    
    EDMA.CHANNEL[12].TCDWORD12_.B.SLAST =  0;	    //  last Signed source address adjust                  
 
-   EDMA.CHANNEL[12].TCDWORD16_.B.DADDR = (uint32_t)(&SID_m_ct_eTimer1Ch0Capt1);    // Destination address 
+   EDMA.CHANNEL[12].TCDWORD16_.B.DADDR = (uint32_t)(&SID_m_ct_eTimer0Ch0Capt1);    // Destination address 
    
    EDMA.CHANNEL[12].TCDWORD20_.B.CITER_E_LINK = 0;  //link on minor loop 
    EDMA.CHANNEL[12].TCDWORD20_.B.CITER_LINKCH = 0; //link on ch15                       
@@ -537,15 +537,15 @@ void ConfigureDMA12_eTimer1Ch0(void)
 
 	EDMA.SERQR.R = 12; //Enable request to channel
 
-	DMAMUX.CHCONFIG[12].B.SOURCE = 16;//eTimer_1 Channel 0
+	DMAMUX.CHCONFIG[12].B.SOURCE = 14;//eTimer_0 Channel 0,, Request 0 Select Register (DREQ0)
 	DMAMUX.CHCONFIG[12].B.ENBL = 1;			
 }
 
-extern uint16_t   SID_m_ct_eTimer1Ch1Capt1[2];
+extern uint16_t   SID_m_ct_eTimer0Ch1Capt1[2];
 
-void ConfigureDMA11_eTimer1Ch1(void)
+void ConfigureDMA11_eTimer0Ch1(void)
 {
-	EDMA.CHANNEL[11].TCDWORD0_.B.SADDR = (uint32_t) (&ETIMER_1.CHANNEL[1].CNTR.R);   // Source Address 	
+	EDMA.CHANNEL[11].TCDWORD0_.B.SADDR = (uint32_t) (&ETIMER_0.CHANNEL[1].CNTR.R);   // Source Address 	
    
    EDMA.CHANNEL[11].TCDWORD4_.B.SMOD  = 0;	    //  Source address modulo
    EDMA.CHANNEL[11].TCDWORD4_.B.SSIZE = 1;	    //  Source transfer size : 16 Bits 
@@ -560,7 +560,7 @@ void ConfigureDMA11_eTimer1Ch1(void)
    
    EDMA.CHANNEL[11].TCDWORD12_.B.SLAST =  0;	    //  last Signed source address adjust                  
 
-   EDMA.CHANNEL[11].TCDWORD16_.B.DADDR = (uint32_t)(SID_m_ct_eTimer1Ch1Capt1);    // Destination address 
+   EDMA.CHANNEL[11].TCDWORD16_.B.DADDR = (uint32_t)(SID_m_ct_eTimer0Ch1Capt1);    // Destination address 
    
    EDMA.CHANNEL[11].TCDWORD20_.B.CITER_E_LINK = 0;  //link on minor loop 
    EDMA.CHANNEL[11].TCDWORD20_.B.CITER_LINKCH = 0; //link on ch15                       
@@ -590,6 +590,6 @@ void ConfigureDMA11_eTimer1Ch1(void)
 
 	EDMA.SERQR.R = 11; //Enable request to channel
 
-	DMAMUX.CHCONFIG[11].B.SOURCE = 17;//eTimer_1 Channel 1
+	DMAMUX.CHCONFIG[11].B.SOURCE = 15;//eTimer_0 Channel 1,, Request 1 Select Register (DREQ1)
 	DMAMUX.CHCONFIG[11].B.ENBL = 1;			
 }

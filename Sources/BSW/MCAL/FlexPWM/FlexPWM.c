@@ -9,7 +9,9 @@
 
 void LaunchFlexPWM0_modules012(void) //must load together!!! 20160512 xyl
 {
+	//FLEXPWM_0.FCTRL.R = 0x0100; 		// enable automatic fault clearing of FAULT0, a logic 0 on the fault input indicates a fault condition.  
 	//FLEXPWM_0.FSTS.R = 0xF;
+
 	FLEXPWM_0.OUTEN.B.PWMA_EN |= 0x7;
 	FLEXPWM_0.OUTEN.B.PWMB_EN |= 0x7;
 
@@ -32,7 +34,10 @@ void PWM_PadConfig(void)
   /* MPC5643L: Config pad A[13] pin as PWM0_B[2] output */
   SIU.PCR[13].B.PA = 2;//NOTE!!
   /* MPC5643L: Config pad C[10] pin as PWM0_A[3] output */
-  SIU.PCR[42].B.PA = 3;
+  //SIU.PCR[42].B.PA = 3;
+
+	SIU.PCR[9].R = 0x0103;				// A[9] pin as FlexPWM FAULT0 input, pull up enabled
+	SIU.PSMI[16].R = 0;  				// route A[9] into FlexPWM FAULT0 input
 }
 
 
@@ -75,7 +80,7 @@ void ConfigureFlexPWM0Sub0(void)
 	FLEXPWM_0.SUB[0].DTCNT0.R = FLEXPWM0_DTCNT;//PWM0_H dead time
 	FLEXPWM_0.SUB[0].DTCNT1.R = FLEXPWM0_DTCNT;//PWM0_L dead time
 
-  FLEXPWM_0.SUB[0].DISMAP.R   = 0x0000;	// disable fault pin condition
+	FLEXPWM_0.SUB[0].DISMAP.R = 0x0111;	//just FAULT0 on A9 pin should be used to disable A[0],B[0] and X[0] outputs
 }
 
 
@@ -111,7 +116,8 @@ void ConfigureFlexPWM0Sub1(void)
 	FLEXPWM_0.SUB[1].DTCNT0.R = FLEXPWM0_DTCNT;//PWM0_H dead time
 	FLEXPWM_0.SUB[1].DTCNT1.R = FLEXPWM0_DTCNT;//PWM0_L dead time
 
-  FLEXPWM_0.SUB[1].DISMAP.R   = 0x0000;	// disable fault pin condition
+  //FLEXPWM_0.SUB[1].DISMAP.R   = 0x0000;	// disable fault pin condition
+	FLEXPWM_0.SUB[1].DISMAP.R = 0x0111;	//just FAULT0 on A9 pin should be used to disable A[0],B[0] and X[0] outputs
 }
 
 
@@ -138,7 +144,7 @@ void ConfigureFlexPWM0Sub2(void)
 	FLEXPWM_0.SUB[2].CTRL2.B.PWM23_INIT = 0;
 	FLEXPWM_0.SUB[2].CTRL2.B.PWM45_INIT = 0;
 
-  FLEXPWM_0.SUB[2].INIT.R   = (int16_t)-FLEXPWM0_SUB012_HALF;
+  	FLEXPWM_0.SUB[2].INIT.R   = (int16_t)-FLEXPWM0_SUB012_HALF;
 	FLEXPWM_0.SUB[2].VAL[0].R = 0;
 	FLEXPWM_0.SUB[2].VAL[1].R = FLEXPWM0_SUB012_HALF;    // Max value for counter 
 	FLEXPWM_0.SUB[2].VAL[2].R = (int16_t)-((uint16_t)(((uint32_t)(FLEXPWM0_SUB012_HALF*PWM0_SUB012_INIT_DUTY))/100));
@@ -146,7 +152,8 @@ void ConfigureFlexPWM0Sub2(void)
 	FLEXPWM_0.SUB[2].DTCNT0.R = FLEXPWM0_DTCNT;//PWM0_H dead time
 	FLEXPWM_0.SUB[2].DTCNT1.R = FLEXPWM0_DTCNT;//PWM0_L dead time
 
-  FLEXPWM_0.SUB[2].DISMAP.R   = 0x0000;	// disable fault pin condition
+  	//FLEXPWM_0.SUB[2].DISMAP.R   = 0x0000;	// disable fault pin condition
+	FLEXPWM_0.SUB[2].DISMAP.R = 0x0111;	//just FAULT0 on A9 pin should be used to disable A[2],B[2] and X[2] outputs
 }
 
 
